@@ -8,6 +8,7 @@ import uuid
 import time
 import os
 import random
+import re
 
 group_name = 'a170'
 
@@ -16,8 +17,11 @@ bot = Bot()
 group = bot.groups().search(group_name)[0]
 
 def get_sticker_name(msg):
-    sticker_name = msg
-    return sticker_name
+    sticker_name = re.search('求(.*)表情', msg)
+    if sticker_name:
+        sticker_name = sticker_name.group(1)
+        return sticker_name.strip()
+    return ''
 
 def get_sticker_urls(sticker_name):
     r = session.get('https://www.fabiaoqing.com/search/search/keyword/' + sticker_name)
@@ -47,10 +51,13 @@ def get_stickers(sticker_name):
         stickers.append(sticker)
     return stickers, sticker_urls
 
-@bot.register(group, TEXT)
+@bot.register(chats=group, msg_types=TEXT, except_self=False)
 def reply_message(msg):
     print('收到信息：' + msg)
     sticker_name = get_sticker_name(msg)
+    if not sticker_name:
+        print('不需进行自动回复')
+        return
     print('开始搜索：' + sticker_name)
     stickers, sticker_urls = get_stickers(sticker_name)
     if not stickers:
@@ -67,4 +74,4 @@ def reply_message(msg):
         except Exception as e:
             print('发送失败', e)
 
-embed()
+embed(shell='i')

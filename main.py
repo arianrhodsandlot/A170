@@ -10,11 +10,14 @@ import os
 import random
 import re
 
-group_name = 'a170'
+group_name = '灵魂斗图表情包'
+tmp_directory = 'tmp'
 
 session = HTMLSession()
-bot = Bot()
+bot = Bot(console_qr=True)
 group = ensure_one(bot.groups().search(group_name))
+if not os.path.exists(tmp_directory):
+    os.makedirs(tmp_directory)
 
 def get_sticker_name(msg):
     sticker_name = re.search('求(.*)表情', msg)
@@ -30,6 +33,8 @@ def get_sticker_urls(sticker_name):
     animate_sticker_urls = []
     static_sticker_urls = []
     for sticker_url in sticker_urls:
+        if sticker_url.startswith('/'):
+            sticker_url = 'https://www.fabiaoqing.com' + sticker_url
         ext = os.path.splitext(urllib.parse.urlparse(sticker_url).path)[1]
         if ext == '.gif':
             animate_sticker_urls.append(sticker_url)
@@ -46,22 +51,12 @@ def get_stickers(sticker_name):
     stickers = []
     for sticker_url in sticker_urls:
         ext = os.path.splitext(urllib.parse.urlparse(sticker_url).path)[1]
-        sticker = 'tmp/' + str(uuid.uuid1()) + ext
+        sticker = tmp_directory + '/' + str(uuid.uuid1()) + ext
         urllib.request.urlretrieve(sticker_url, sticker)
         stickers.append(sticker)
     return stickers, sticker_urls
 
-@bot.register()
-def print_messages(msg):
-    print(msg)
-
-@bot.register()
-def reply_message(msg):
-    print('收到信息：' + msg)
-    sticker_name = get_sticker_name(msg)
-    if not sticker_name:
-        print('不需进行自动回复')
-        return
+def respond_with_keyword(sticker_name):
     print('开始搜索：' + sticker_name)
     stickers, sticker_urls = get_stickers(sticker_name)
     if not stickers:
@@ -74,8 +69,26 @@ def reply_message(msg):
             print('开始发送第' + str(idx) + '张，原链接为 ' + sticker_urls[idx])
             group.send_image(sticker)
             sent_count += 1
-            time.sleep(0.6)
         except Exception as e:
+            if (e.err_code == 1205):
+                print('已达到微信限制频率', e)
+                return
             print('发送失败', e)
+        time.sleep(0.6)
+
+@bot.register(group, SHARING, False)
+def reply_spam(msg):
+    group.send('@辛仝 发广告的来了')
+    respond_with_keyword('发广告的')
+
+
+@bot.register(group, TEXT, False)
+def reply_message(msg):
+    print('收到信息：' + msg.text)
+    sticker_name = get_sticker_name(msg.text)
+    if not sticker_name:
+        print('不需进行自动回复')
+        return
+    respond_with_keyword(sticker_name)
 
 embed(shell='i')

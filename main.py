@@ -11,6 +11,7 @@ import random
 import re
 
 group_name = '灵魂斗图表情包'
+group_name = 'a170'
 tmp_directory = 'tmp'
 
 session = HTMLSession()
@@ -46,27 +47,21 @@ def get_sticker_urls(sticker_name):
     print(str(len(static_sticker_urls)) + '不动图')
     return final_stiker_urls
 
-def get_stickers(sticker_name):
-    sticker_urls = get_sticker_urls(sticker_name)
-    stickers = []
-    for sticker_url in sticker_urls:
-        ext = os.path.splitext(urllib.parse.urlparse(sticker_url).path)[1]
-        sticker = tmp_directory + '/' + str(uuid.uuid1()) + ext
-        urllib.request.urlretrieve(sticker_url, sticker)
-        stickers.append(sticker)
-    return stickers, sticker_urls
-
 def respond_with_keyword(sticker_name):
     print('开始搜索：' + sticker_name)
-    stickers, sticker_urls = get_stickers(sticker_name)
-    if not stickers:
+    sticker_urls = get_sticker_urls(sticker_name)
+    if not sticker_urls:
         return
     sent_count = 0
-    for idx, sticker in enumerate(stickers):
-        if sent_count > 5:
+    stickers = []
+    for idx, sticker_url in enumerate(sticker_urls):
+        if sent_count > 4:
             return
         try:
-            print('开始发送第' + str(idx) + '张，原链接为 ' + sticker_urls[idx])
+            ext = os.path.splitext(urllib.parse.urlparse(sticker_url).path)[1]
+            sticker = tmp_directory + '/' + str(uuid.uuid1()) + ext
+            urllib.request.urlretrieve(sticker_url, sticker)
+            print('开始发送第' + str(idx) + '张，原链接为 ' + sticker_url)
             group.send_image(sticker)
             sent_count += 1
         except Exception as e:

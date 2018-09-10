@@ -14,7 +14,7 @@ group_name = 'a170'
 
 session = HTMLSession()
 bot = Bot()
-group = bot.groups().search(group_name)[0]
+group = ensure_one(bot.groups().search(group_name))
 
 def get_sticker_name(msg):
     sticker_name = re.search('求(.*)表情', msg)
@@ -51,7 +51,11 @@ def get_stickers(sticker_name):
         stickers.append(sticker)
     return stickers, sticker_urls
 
-@bot.register(chats=group, msg_types=TEXT, except_self=False)
+@bot.register()
+def print_messages(msg):
+    print(msg)
+
+@bot.register()
 def reply_message(msg):
     print('收到信息：' + msg)
     sticker_name = get_sticker_name(msg)

@@ -10,8 +10,7 @@ import os
 import random
 import re
 
-group_name = '灵魂斗图表情包'
-group_name = 'a170'
+group_name = os.environ.get('A170_GROUP_NAME', 'a170')
 tmp_directory = 'tmp'
 
 session = HTMLSession()
@@ -61,7 +60,7 @@ def respond_with_keyword(sticker_name):
             ext = os.path.splitext(urllib.parse.urlparse(sticker_url).path)[1]
             sticker = tmp_directory + '/' + str(uuid.uuid1()) + ext
             urllib.request.urlretrieve(sticker_url, sticker)
-            print('开始发送第' + str(idx) + '张，原链接为 ' + sticker_url)
+            print('开始发送第' + str(idx + 1) + '张，原链接为 ' + sticker_url)
             group.send_image(sticker)
             sent_count += 1
         except Exception as e:

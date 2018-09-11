@@ -94,7 +94,7 @@ def reply_message(msg):
     print('{}说：{}'.format(msg.sender.name, msg.text))
     if current_reply_msg:
         print('由于正在回复上一条{}，跳过回复此消息'.format(current_reply_msg.sender))
-        group.send('我正在找其他图，你等我发完再重新问'
+        group.send('我正在找其他图，你等我发完再重新问')
         return
     current_reply_msg = msg
     sticker_name = get_sticker_name(msg.text)

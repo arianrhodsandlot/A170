@@ -8,6 +8,10 @@ requests-html = "*"
 wxpy = "*"
 ipython = "*"
 pillow = "*"
+pysocks = "*"
+"flake8" = "*"
+python-slugify = "*"
+imgpy = "*"
 
 [dev-packages]
 

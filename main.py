@@ -52,9 +52,9 @@ def respond_stickers_with_keyword(sticker_name, count=5, silent=False):
     sticker_urls = get_sticker_urls(sticker_name)
     if not sticker_urls:
         return
-    sent_count = 1
+    sent_count = 0
     for idx, sticker_url in enumerate(sticker_urls):
-        if sent_count > count:
+        if sent_count + 1 > count:
             return
         try:
             ext = os.path.splitext(urllib.parse.urlparse(sticker_url).path)[1]
@@ -93,11 +93,8 @@ def reply_message(msg):
     global current_reply_msg
     print('{}说：{}'.format(msg.sender.name, msg.text))
     if current_reply_msg:
-        print('由于正在回复上一条，跳过回复此消息')
-        if msg.sender.name == current_reply_msg.sender.name:
-            group.send('@{} ，我正在给你找{}的图，你等我发完再重新问'.format(msg.sender.name, get_sticker_name(current_reply_msg.text)))
-        else:
-            group.send('@{} ，我正在给 @{} 找图，你等我发完再重新问'.format(msg.sender.name, current_reply_msg.sender.name))
+        print('由于正在回复上一条{}，跳过回复此消息'.format(current_reply_msg.sender))
+        group.send('我正在找其他图，你等我发完再重新问'
         return
     current_reply_msg = msg
     sticker_name = get_sticker_name(msg.text)

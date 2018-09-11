@@ -64,7 +64,7 @@ def respond_stickers_with_keyword(sticker_name, count=5, silent=False):
                 os.makedirs(tmp_directory)
             urllib.request.urlretrieve(sticker_url, sticker)
             sticker_size_in_mb = os.path.getsize(sticker) / 1024 / 1024
-            if sticker_size_in_mb > 1:
+            if sticker_size_in_mb > 0.9:
                 print('第' + str(idx + 1) + '张因大小可能超过微信限制跳过发送，原链接为 ' + sticker_url)
                 continue
             print('开始发送第' + str(idx + 1) + '张，原链接为 ' + sticker_url)

@@ -28,10 +28,10 @@ def get_sticker_name(msg):
 
 
 def get_sticker_urls(sticker_name):
-    # r = session.get('https://www.fabiaoqing.com/search/search/keyword/' + urllib.parse.quote(sticker_name))
-    # sticker_els = r.html.find('.searchbqppdiv .image')
-    r = session.get('https://www.doutula.com/search?keyword=' + urllib.parse.quote(sticker_name))
-    sticker_els = r.html.find('.random_picture .img-responsive')
+    r = session.get('https://www.fabiaoqing.com/search/search/keyword/' + urllib.parse.quote(sticker_name))
+    sticker_els = r.html.find('.searchbqppdiv .image')
+    # r = session.get('https://www.doutula.com/search?keyword=' + urllib.parse.quote(sticker_name))
+    # sticker_els = r.html.find('.random_picture .img-responsive')
     sticker_urls = [sticker_el.attrs.get('data-original') for sticker_el in sticker_els]
     sticker_urls = sticker_urls[:25]
     animate_sticker_urls = []

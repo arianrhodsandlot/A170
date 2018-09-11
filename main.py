@@ -28,9 +28,12 @@ def get_sticker_name(msg):
 
 
 def get_sticker_urls(sticker_name):
-    r = session.get('https://www.fabiaoqing.com/search/search/keyword/' + sticker_name)
-    sticker_els = r.html.find('.searchbqppdiv .image')
+    # r = session.get('https://www.fabiaoqing.com/search/search/keyword/' + urllib.parse.quote(sticker_name))
+    # sticker_els = r.html.find('.searchbqppdiv .image')
+    r = session.get('https://www.doutula.com/search?keyword=' + urllib.parse.quote(sticker_name))
+    sticker_els = r.html.find('.random_picture .img-responsive')
     sticker_urls = [sticker_el.attrs.get('data-original') for sticker_el in sticker_els]
+    sticker_urls = sticker_urls[:25]
     animate_sticker_urls = []
     static_sticker_urls = []
     for sticker_url in sticker_urls:
@@ -44,14 +47,12 @@ def get_sticker_urls(sticker_name):
     final_stiker_urls = animate_sticker_urls + static_sticker_urls
     print('搜到{}张表情包，{}动图，{}不动图'.format(len(final_stiker_urls), len(animate_sticker_urls), len(static_sticker_urls)))
     random.shuffle(final_stiker_urls)
-    return final_stiker_urls
+    return final_stiker_urls or []
 
 
 def respond_stickers_with_keyword(sticker_name, count=5, silent=False):
     print('开始搜索：' + sticker_name)
     sticker_urls = get_sticker_urls(sticker_name)
-    if not sticker_urls:
-        return
     sent_count = 0
     for idx, sticker_url in enumerate(sticker_urls):
         if sent_count + 1 > count:
@@ -74,7 +75,7 @@ def respond_stickers_with_keyword(sticker_name, count=5, silent=False):
             if (e.err_code == 1205):
                 print('已达到微信限制频率', e)
                 if not silent:
-                    group.send('我暂时被微信封了，其它群友有的帮忙发下')
+                    group.send('我暂时被微信封了，正好也休息会。其它群友有的帮忙发下')
                 return
         time.sleep(0.8)
     if not sent_count and not silent:

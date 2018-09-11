@@ -92,12 +92,12 @@ def reply_spam(msg):
 def reply_message(msg):
     global current_reply_msg
     print('{}说：{}'.format(msg.sender.name, msg.text))
+    sticker_name = get_sticker_name(msg.text)
+    if not sticker_name:
+        return
     if current_reply_msg:
         print('由于正在回复上一条{}，跳过回复此消息'.format(current_reply_msg.sender))
         group.send('我正在找其他图，你等我发完再重新问')
-        return
-    sticker_name = get_sticker_name(msg.text)
-    if not sticker_name:
         return
     current_reply_msg = msg
     respond_stickers_with_keyword(sticker_name)

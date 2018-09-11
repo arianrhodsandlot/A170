@@ -99,6 +99,7 @@ def reply_message(msg):
     current_reply_msg = msg
     sticker_name = get_sticker_name(msg.text)
     if not sticker_name:
+        current_reply_msg = None
         return
     respond_stickers_with_keyword(sticker_name)
     current_reply_msg = None

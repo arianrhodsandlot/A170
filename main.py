@@ -33,7 +33,7 @@ def get_sticker_urls(sticker_name):
     # r = session.get('https://www.doutula.com/search?keyword=' + urllib.parse.quote(sticker_name))
     # sticker_els = r.html.find('.random_picture .img-responsive')
     sticker_urls = [sticker_el.attrs.get('data-original') for sticker_el in sticker_els]
-    sticker_urls = sticker_urls[:25]
+    sticker_urls = sticker_urls[:10]
     animate_sticker_urls = []
     static_sticker_urls = []
     for sticker_url in sticker_urls:
@@ -50,7 +50,7 @@ def get_sticker_urls(sticker_name):
     return final_stiker_urls or []
 
 
-def respond_stickers_with_keyword(sticker_name, count=5, silent=False):
+def respond_stickers_with_keyword(sticker_name, count=3, silent=False):
     print('开始搜索：' + sticker_name)
     sticker_urls = get_sticker_urls(sticker_name)
     sent_count = 0
@@ -76,16 +76,16 @@ def respond_stickers_with_keyword(sticker_name, count=5, silent=False):
             if (e.err_code == 1205):
                 print('已达到微信限制频率', e)
                 if not silent:
-                    group.send('我暂时被微信封了，正好也休息会。其它群友有的帮忙发下')
+                    group.send('我被封了，先休息会')
                 return
     if not sent_count and not silent:
-        group.send('我这没有{}表情, 其它群友有的帮忙发下'.format(sticker_name))
+        group.send('我这没有{}表情'.format(sticker_name))
 
 
 @bot.register(group, SHARING, False)
 def reply_spam(msg):
     print('{}说：{}'.format(msg.sender.name, msg.text))
-    group.send('@辛仝 逮住一个发广告的')
+    group.send('@辛仝 逮住个发广告的')
     respond_stickers_with_keyword('发广告的', count=3)
 
 
@@ -98,7 +98,7 @@ def reply_message(msg):
         return
     if current_reply_msg:
         print('由于正在回复上一条{}，跳过回复此消息'.format(current_reply_msg.sender))
-        group.send('我正在找其他图，你等我发完再重新问')
+        group.send('我在找其他图，你等我发完再问')
         return
     current_reply_msg = msg
     respond_stickers_with_keyword(sticker_name)

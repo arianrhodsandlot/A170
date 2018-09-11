@@ -68,6 +68,7 @@ def respond_stickers_with_keyword(sticker_name, count=5, silent=False):
                 print('第' + str(idx + 1) + '张因大小可能超过微信限制跳过发送，原链接为 ' + sticker_url)
                 continue
             print('开始发送第' + str(idx + 1) + '张，原链接为 ' + sticker_url)
+            time.sleep(0.8)
             group.send_image(sticker)
             sent_count += 1
         except Exception as e:
@@ -77,7 +78,6 @@ def respond_stickers_with_keyword(sticker_name, count=5, silent=False):
                 if not silent:
                     group.send('我暂时被微信封了，正好也休息会。其它群友有的帮忙发下')
                 return
-        time.sleep(0.8)
     if not sent_count and not silent:
         group.send('我这没有{}表情, 其它群友有的帮忙发下'.format(sticker_name))
 

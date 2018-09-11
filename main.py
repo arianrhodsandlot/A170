@@ -1,14 +1,14 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # coding: utf-8
-from wxpy import *
-from requests_html import HTMLSession
-import urllib.request
-import urllib.parse
 import uuid
 import time
 import os
 import random
 import re
+from wxpy import Bot, ensure_one, embed, SHARING, TEXT
+from requests_html import HTMLSession
+import urllib.request
+import urllib.parse
 
 group_name = os.environ.get('A170_GROUP_NAME', 'a170')
 tmp_directory = 'tmp'
@@ -18,8 +18,6 @@ session = HTMLSession()
 bot = Bot(console_qr=True)
 group = ensure_one(bot.groups().search(group_name))
 
-if not os.path.exists(tmp_directory):
-    os.makedirs(tmp_directory)
 
 def get_sticker_name(msg):
     sticker_name = re.search('求(.*)表情', msg)
@@ -27,6 +25,7 @@ def get_sticker_name(msg):
         sticker_name = sticker_name.group(1)
         return sticker_name.strip()
     return ''
+
 
 def get_sticker_urls(sticker_name):
     r = session.get('https://www.fabiaoqing.com/search/search/keyword/' + sticker_name)
@@ -47,19 +46,21 @@ def get_sticker_urls(sticker_name):
     random.shuffle(final_stiker_urls)
     return final_stiker_urls
 
-def respond_stickers_with_keyword(sticker_name, silent=False):
+
+def respond_stickers_with_keyword(sticker_name, count=5, silent=False):
     print('开始搜索：' + sticker_name)
     sticker_urls = get_sticker_urls(sticker_name)
     if not sticker_urls:
         return
-    sent_count = 0
-    stickers = []
+    sent_count = 1
     for idx, sticker_url in enumerate(sticker_urls):
-        if sent_count > 4:
+        if sent_count > count:
             return
         try:
             ext = os.path.splitext(urllib.parse.urlparse(sticker_url).path)[1]
             sticker = tmp_directory + '/' + str(uuid.uuid1()) + ext
+            if not os.path.exists(tmp_directory):
+                os.makedirs(tmp_directory)
             urllib.request.urlretrieve(sticker_url, sticker)
             sticker_size_in_mb = os.path.getsize(sticker) / 1024 / 1024
             if sticker_size_in_mb > 1:
@@ -79,11 +80,12 @@ def respond_stickers_with_keyword(sticker_name, silent=False):
     if not sent_count and not silent:
         group.send('我这没有{}表情, 其它群友有的帮忙发下'.format(sticker_name))
 
+
 @bot.register(group, SHARING, False)
 def reply_spam(msg):
     print('{}说：{}'.format(msg.sender.name, msg.text))
-    group.send('@辛仝 逮住一个广告的')
-    respond_stickers_with_keyword('发广告的')
+    group.send('@辛仝 逮住一个发广告的')
+    respond_stickers_with_keyword('发广告的', count=3)
 
 
 @bot.register(group, TEXT, False)
@@ -103,5 +105,6 @@ def reply_message(msg):
         return
     respond_stickers_with_keyword(sticker_name)
     current_reply_msg = None
+
 
 embed(shell='i')

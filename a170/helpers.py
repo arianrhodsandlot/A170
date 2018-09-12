@@ -22,8 +22,10 @@ socket.setdefaulttimeout(3)
 def get_sticker_urls_from_fabiaoqing(sticker_name, limit=10):
     if not limit:
         return []
+    url = 'https://www.fabiaoqing.com/search/search/keyword/{}'.format(urllib.parse.quote(sticker_name))
+    print('开始请求{}'.format(url))
     try:
-        r = session.get('https://www.fabiaoqing.com/search/search/keyword/'.format(urllib.parse.quote(sticker_name)))
+        r = session.get(url, timeout=2)
     except Exception as e:
         print(e)
         return []
@@ -40,8 +42,10 @@ def get_sticker_urls_from_fabiaoqing(sticker_name, limit=10):
 def get_sticker_urls_from_doutula(sticker_name, limit=10):
     if not limit:
         return []
+    url = 'https://www.doutula.com/search?keyword={}'.format(urllib.parse.quote(sticker_name))
+    print('开始请求{}'.format(url))
     try:
-        r = session.get('https://www.doutula.com/search?keyword={}'.format(urllib.parse.quote(sticker_name)))
+        r = session.get(url, timeout=2)
     except Exception as e:
         print(e)
         return []
@@ -59,8 +63,10 @@ def get_sticker_urls_from_google(sticker_name, limit=10):
     if not limit:
         return []
     q = '{} 表情包'.format(urllib.parse.quote(sticker_name))
+    url = 'https://www.google.com/search?tbs=itp%3Aanimated&tbm=isch&q={}'.format(q)
+    print('开始请求{}'.format(url))
     try:
-        r = session.get('https://www.google.com/search?tbs=itp%3Aanimated&tbm=isch&q={}'.format(q))
+        r = session.get(url, timeout=2)
     except Exception as e:
         print(e)
         return []
@@ -75,9 +81,10 @@ def get_sticker_urls_from_google(sticker_name, limit=10):
 def get_sticker_urls_from_sogou(sticker_name, limit=10):
     if not limit:
         return []
+    url = 'http://biaoqing.sogou.com/anonymous/call/tugele/getSearchForOfficial?keyword={}'.format(urllib.parse.quote(sticker_name))
+    print('开始请求{}'.format(url))
     try:
-        print('http://biaoqing.sogou.com/anonymous/call/tugele/getSearchForOfficial?keyword={}'.format(urllib.parse.quote(sticker_name)))
-        r = session.get('http://biaoqing.sogou.com/anonymous/call/tugele/getSearchForOfficial?keyword={}'.format(urllib.parse.quote(sticker_name)))
+        r = session.get(url, timeout=2)
     except Exception as e:
         print(e)
         return []
@@ -97,15 +104,16 @@ def get_sticker_urls(sticker_name, limit=30):
     sticker_urls = []
 
     sticker_urls += get_sticker_urls_from_fabiaoqing(sticker_name, limit=15)
-    if not sticker_urls:
+    if len(sticker_urls) < limit:
         sticker_urls += get_sticker_urls_from_sogou(sticker_name, limit=15)
-    sticker_urls += get_sticker_urls_from_doutula(sticker_name, limit=0)
-    sticker_urls += get_sticker_urls_from_google(sticker_name, limit=0)
+    if len(sticker_urls) < limit:
+        sticker_urls += get_sticker_urls_from_doutula(sticker_name, limit=0)
+    if len(sticker_urls) < limit:
+        sticker_urls += get_sticker_urls_from_google(sticker_name, limit=0)
 
     # gif_sticker_urls = [sticker_url for sticker_url in sticker_urls if sticker_url.endswith('.gif')]
     # normal_sticker_urls = [sticker_url for sticker_url in sticker_urls if not sticker_url.endswith('.gif')]
     # sticker_urls = (gif_sticker_urls + normal_sticker_urls)
-
 
     sticker_urls = sticker_urls[:limit] or []
     random.shuffle(sticker_urls)
@@ -131,11 +139,14 @@ def send_stickers_with_keyword_to_chat(sticker_name, chat, count=3, send_fail_me
             urllib.request.urlretrieve(sticker_url, sticker)
             sticker_size_in_mb = os.path.getsize(sticker) / 1024 / 1024
             if ext == 'gif' and sticker_size_in_mb < 0.1:
-                    print('动图尺寸{}MB太小，质量高几率较差，跳过发送'.format(round(sticker_size_in_mb, 2)))
+                print('动图文件大小{}MB太小，质量高几率较差，跳过发送'.format(round(sticker_size_in_mb, 2)))
+                continue
+            with Img(fp=sticker) as im:
+                w, h = im.size
+                if w < 180:
+                    print('图片尺寸{}×{}太小，质量高几率较差，跳过发送'.format(w, h))
                     continue
-            if sticker_size_in_mb > 0.5:
-                with Img(fp=sticker) as im:
-                    w, h = im.size
+                if sticker_size_in_mb > 0.5:
                     thumb_w = 180
                     thumb_h = int(thumb_w / w * h)
                     im.resize((thumb_w, thumb_h))

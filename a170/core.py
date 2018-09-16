@@ -18,7 +18,7 @@ group = ensure_one(bot.groups().search(group_name))
 def reply_spam(msg):
     print('{}说：{}'.format(msg.sender.name, msg.text))
     group.send('@辛仝 逮住个发广告的')
-    send_stickers_with_keyword_to_chat(sticker_name='发广告的', chat=group, silent_fail=True)
+    send_stickers_with_keyword_to_chat(sticker_name='发广告的', chat=group, send_fail_message=True)
 
 
 @bot.register(group, TEXT, False)

@@ -103,9 +103,9 @@ def get_sticker_urls_from_sogou(sticker_name, limit=10):
 def get_sticker_urls(sticker_name, limit=30):
     sticker_urls = []
 
-    sticker_urls += get_sticker_urls_from_fabiaoqing(sticker_name, limit=15)
+    sticker_urls += get_sticker_urls_from_fabiaoqing(sticker_name, limit=20)
     if len(sticker_urls) < limit:
-        sticker_urls += get_sticker_urls_from_sogou(sticker_name, limit=15)
+        sticker_urls += get_sticker_urls_from_sogou(sticker_name, limit=10)
     if len(sticker_urls) < limit:
         sticker_urls += get_sticker_urls_from_doutula(sticker_name, limit=0)
     if len(sticker_urls) < limit:

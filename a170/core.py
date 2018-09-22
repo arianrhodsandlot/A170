@@ -33,6 +33,8 @@ def reply_stickers(msg):
         gif_sticker_name = gif_sticker_name.group(1).strip()
     if not sticker_name and not gif_sticker_name:
         return
+    if sticker_name == 'xxx' or gif_sticker_name == 'xxx':
+        return
     if current_reply_msg:
         print('由于正在回复上一条{}，跳过回复此消息'.format(current_reply_msg.sender))
         return

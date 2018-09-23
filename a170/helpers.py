@@ -3,21 +3,35 @@ import json
 import os
 import random
 import re
-import socket
 import time
 import urllib
 from imgpy import Img
 from requests_html import HTMLSession
 from slugify import slugify
 from tempfile import gettempdir
+from urllib3.util.retry import Retry
+from requests.adapters import HTTPAdapter
 
-session = HTMLSession()
+def retry_session(retries, session, backoff_factor=0, status_forcelist=(500, 502, 503, 504)):
+    retry = Retry(
+        total=retries,
+        read=retries,
+        connect=retries,
+        backoff_factor=backoff_factor,
+        status_forcelist=status_forcelist,
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount('http://', adapter)
+    session.mount('https://', adapter)
+    return session
+
+session = retry_session(5, HTMLSession())
+
 if os.path.exists('tmp'):
     tempdir = 'tmp'
 else:
     tempdir = gettempdir()
 
-socket.setdefaulttimeout(3)
 
 def get_sticker_urls_from_fabiaoqing(sticker_name, limit=10):
     if not limit:
@@ -25,7 +39,7 @@ def get_sticker_urls_from_fabiaoqing(sticker_name, limit=10):
     url = 'https://www.fabiaoqing.com/search/search/keyword/{}'.format(urllib.parse.quote(sticker_name))
     print('开始请求{}'.format(url))
     try:
-        r = session.get(url, timeout=2)
+        r = session.get(url, timeout=1.5)
     except Exception as e:
         print(e)
         return []
@@ -45,7 +59,7 @@ def get_sticker_urls_from_doutula(sticker_name, limit=10):
     url = 'https://www.doutula.com/search?keyword={}'.format(urllib.parse.quote(sticker_name))
     print('开始请求{}'.format(url))
     try:
-        r = session.get(url, timeout=2)
+        r = session.get(url, timeout=1.5)
     except Exception as e:
         print(e)
         return []
@@ -66,7 +80,7 @@ def get_sticker_urls_from_google(sticker_name, limit=10):
     url = 'https://www.google.com/search?tbs=itp%3Aanimated&tbm=isch&q={}'.format(q)
     print('开始请求{}'.format(url))
     try:
-        r = session.get(url, timeout=2)
+        r = session.get(url, timeout=1.5)
     except Exception as e:
         print(e)
         return []
@@ -84,7 +98,7 @@ def get_sticker_urls_from_sogou(sticker_name, limit=10):
     url = 'http://biaoqing.sogou.com/anonymous/call/tugele/getSearchForOfficial?keyword={}'.format(urllib.parse.quote(sticker_name))
     print('开始请求{}'.format(url))
     try:
-        r = session.get(url, timeout=2)
+        r = session.get(url, timeout=1.5)
     except Exception as e:
         print(e)
         return []
@@ -135,7 +149,7 @@ def send_stickers_with_keyword_to_chat(sticker_name, chat, count=3, send_fail_me
             sticker = os.path.join(tempdir, sticker)
             urllib.request.urlretrieve(sticker_url, sticker)
             sticker_size_in_mb = os.path.getsize(sticker) / 1024 / 1024
-            if ext == 'gif' and sticker_size_in_mb < 0.1:
+            if ext == 'gif' and sticker_size_in_mb < 0.04:
                 print('动图文件大小{}MB太小，质量高几率较差，跳过发送'.format(round(sticker_size_in_mb, 2)))
                 continue
             with Img(fp=sticker) as im:
@@ -143,18 +157,6 @@ def send_stickers_with_keyword_to_chat(sticker_name, chat, count=3, send_fail_me
                 if w < 180:
                     print('图片尺寸{}×{}太小，质量高几率较差，跳过发送'.format(w, h))
                     continue
-                if sticker_size_in_mb > 10:
-                    thumb_w = 180
-                    thumb_h = int(thumb_w / w * h)
-                    im.resize((thumb_w, thumb_h))
-                    sticker = '{}.thumb.{}'.format(base, ext)
-                    sticker = os.path.join(tempdir, sticker)
-                    im.save(fp=sticker)
-                sticker_size_in_mb = os.path.getsize(sticker) / 1024 / 1024
-                if sticker_size_in_mb > 10:
-                    print('压缩后大小为{}MB，可能超过微信限制，跳过发送'.format(round(sticker_size_in_mb, 2)))
-                    continue
-                print('压缩后大小减少为{}MB'.format(round(sticker_size_in_mb, 2)))
             time.sleep(0.8)
             chat.send_image(sticker)
             sent_count += 1
@@ -174,14 +176,6 @@ def send_stickers_with_keyword_to_chat(sticker_name, chat, count=3, send_fail_me
 def send_gif_stickers_with_keyword_to_chat(sticker_name, chat, count=3, send_fail_message=True):
     print('开始搜索：{}'.format(sticker_name))
     sticker_urls = get_sticker_urls(sticker_name, limit=240, shuffle=True)
-    if sticker_name == '加油':
-        sticker_urls = [
-            'http://img01.sogoucdn.com/app/a/200678/62e9a448c191324efb3802da9db56e84.gif',
-            'http://img01.sogoucdn.com/app/a/200678/15107319259024.gif',
-            'http://img01.sogoucdn.com/app/a/200678/924818e2060226414b626e3d06425445.gif',
-            'http://img01.sogoucdn.com/app/a/200678/93a591fd45aefd06e783164d2bfddf7e.gif',
-            'http://img01.sogoucdn.com/app/a/200678/3b4a7c3079fc9fa5606a8e854b7fffce.gif',
-        ]
     sent_count = 0
     sticker_urls = filter(lambda u:u.endswith('.gif'), sticker_urls)
     for idx, sticker_url in enumerate(sticker_urls):
@@ -198,7 +192,7 @@ def send_gif_stickers_with_keyword_to_chat(sticker_name, chat, count=3, send_fai
             sticker = os.path.join(tempdir, sticker)
             urllib.request.urlretrieve(sticker_url, sticker)
             sticker_size_in_mb = os.path.getsize(sticker) / 1024 / 1024
-            if ext == 'gif' and sticker_size_in_mb < 0.1:
+            if ext == 'gif' and sticker_size_in_mb < 0.04:
                 print('动图文件大小{}MB太小，质量高几率较差，跳过发送'.format(round(sticker_size_in_mb, 2)))
                 continue
             chat.send_image(sticker)
@@ -211,6 +205,6 @@ def send_gif_stickers_with_keyword_to_chat(sticker_name, chat, count=3, send_fai
                     chat.send('我被封了，先休息会')
                 return
     if sent_count == 0:
-        print('未发送任何表情')
+        print('未发送任何动图')
         if send_fail_message:
-            chat.send('我这没有{}表情'.format(sticker_name))
+            chat.send('我这没有{}动图'.format(sticker_name))

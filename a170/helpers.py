@@ -53,6 +53,25 @@ def get_sticker_urls_from_fabiaoqing(sticker_name, limit=10):
     return sticker_urls
 
 
+
+def get_sticker_urls_from_beeji(sticker_name, limit=10):
+    if not limit:
+        return []
+    url = 'http://www.bee-ji.com/s?w={}'.format(urllib.parse.quote(sticker_name))
+    print('开始请求{}'.format(url))
+    try:
+        r = session.get(url, timeout=1.5)
+    except Exception as e:
+        print(e)
+        return []
+    sticker_urls = r.html.find('body > script:nth-child(2)')[0].text
+    sticker_urls = sticker_urls.split(';')[0]
+    sticker_urls = sticker_urls.replace('__NEXT_DATA__ =', '')
+    sticker_urls = json.loads(sticker_urls).get('props', {}).get('pageProps', {}).get('images', {})
+    sticker_urls = ['http://image.bee-ji.com/{}?desc={}'.format(sticker_url.get('id'), urllib.parse.quote(sticker_url.get('desc'))) for sticker_url in sticker_urls]
+    return sticker_urls
+
+
 def get_sticker_urls_from_doutula(sticker_name, limit=10):
     if not limit:
         return []
@@ -114,16 +133,22 @@ def get_sticker_urls_from_sogou(sticker_name, limit=10):
     return sticker_urls[:limit]
 
 
-def get_sticker_urls(sticker_name, limit=18, shuffle=True):
+def get_sticker_urls(sticker_name, limit=20, shuffle=True):
     sticker_urls = []
 
-    sticker_urls += get_sticker_urls_from_fabiaoqing(sticker_name, limit=int(limit * 2 / 3))
+    sticker_urls += get_sticker_urls_from_beeji(sticker_name, limit=12)
     if len(sticker_urls) < limit:
-        sticker_urls += get_sticker_urls_from_sogou(sticker_name, limit=int(limit * 1 / 3))
+        print(len(sticker_urls))
+        sticker_urls += get_sticker_urls_from_fabiaoqing(sticker_name, limit=8)
     if len(sticker_urls) < limit:
-        sticker_urls += get_sticker_urls_from_doutula(sticker_name, limit=0)
+        print(len(sticker_urls))
+        sticker_urls += get_sticker_urls_from_sogou(sticker_name, limit=6)
     if len(sticker_urls) < limit:
-        sticker_urls += get_sticker_urls_from_google(sticker_name, limit=0)
+        print(len(sticker_urls))
+        sticker_urls += get_sticker_urls_from_doutula(sticker_name, limit=6)
+    if len(sticker_urls) < limit:
+        print(len(sticker_urls))
+        sticker_urls += get_sticker_urls_from_google(sticker_name, limit=6)
 
     sticker_urls = sticker_urls[:limit] or []
     if shuffle:

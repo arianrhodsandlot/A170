@@ -5,14 +5,14 @@ name = "pypi"
 
 [packages]
 requests-html = "*"
-wxpy = "*"
 ipython = "*"
 pillow = "*"
 pysocks = "*"
 "flake8" = "*"
 python-slugify = "*"
 imgpy = "*"
-itchat = "==1.3.10"
+itchat = "*"
+pylint = "*"
 
 [dev-packages]
 

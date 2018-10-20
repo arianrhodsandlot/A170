@@ -2,7 +2,6 @@
 import json
 import os
 import random
-import re
 import time
 import urllib
 from imgpy import Img
@@ -11,6 +10,7 @@ from slugify import slugify
 from tempfile import gettempdir
 from urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
+
 
 def retry_session(retries, session, backoff_factor=0, status_forcelist=(500, 502, 503, 504)):
     retry = Retry(
@@ -24,6 +24,7 @@ def retry_session(retries, session, backoff_factor=0, status_forcelist=(500, 502
     session.mount('http://', adapter)
     session.mount('https://', adapter)
     return session
+
 
 session = retry_session(5, HTMLSession())
 
@@ -51,7 +52,6 @@ def get_sticker_urls_from_fabiaoqing(sticker_name, limit=10):
         if sticker_url.startswith('/'):
             sticker_urls[idx] = 'https://www.fabiaoqing.com' + sticker_url
     return sticker_urls
-
 
 
 def get_sticker_urls_from_beeji(sticker_name, limit=10):
@@ -202,7 +202,7 @@ def send_gif_stickers_with_keyword_to_chat(sticker_name, chat, count=3, send_fai
     print('开始搜索：{}'.format(sticker_name))
     sticker_urls = get_sticker_urls(sticker_name, limit=240, shuffle=True)
     sent_count = 0
-    sticker_urls = filter(lambda u:u.endswith('.gif'), sticker_urls)
+    sticker_urls = filter(lambda u: u.endswith('.gif'), sticker_urls)
     for idx, sticker_url in enumerate(sticker_urls):
         if sent_count + 1 > count and sticker_name != '加油':
             return

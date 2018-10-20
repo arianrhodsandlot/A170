@@ -1,30 +1,33 @@
 # coding: utf-8
 import os
 import re
-import time
-import urllib
-from wxpy import Bot, ensure_one, embed, SHARING, TEXT
+import itchat
 from a170.helpers import send_stickers_with_keyword_to_chat, send_gif_stickers_with_keyword_to_chat
 
 
-group_name = os.environ.get('A170_GROUP_NAME', 'a170')
+chatroom_name = os.environ.get('A170_CHATROOM_NAME', 'a170')
+
+itchat.auto_login(enableCmdQR=2, hotReload=True)
+
+chatroom = itchat.search_chatrooms(chatroom_name)[0]
+chatroom_owner = chatroom.memberList[0]
+
 current_reply_msg = None
 
-bot = Bot(console_qr=True)
-group = ensure_one(bot.groups().search(group_name))
+
+def reply_sharing():
+    print('{}说：{} {}'.format(msg.actualNickName, msg.text, msg.url))
+    chatroom.send('@{} 逮住个发广告的！'.format(chatroom_owner.nickName))
+    send_stickers_with_keyword_to_chat(sticker_name='发广告的', chat=chatroom, send_fail_message=True)
 
 
-@bot.register(group, SHARING, False)
-def reply_spam(msg):
-    print('{}说：{}'.format(msg.sender.name, msg.text))
-    group.send('@{} 逮住个发广告的！'.format(group.owner.name))
-    send_stickers_with_keyword_to_chat(sticker_name='发广告的', chat=group, send_fail_message=True)
+def reply_note():
+    send_stickers_with_keyword_to_chat(sticker_name='谢谢老板', chat=chatroom, send_fail_message=True)
 
 
-@bot.register(group, TEXT, False)
-def reply_stickers(msg):
+def reply_text():
+    print('{}说：{}'.format(msg.actualNickName, msg.text))
     global current_reply_msg
-    print('{}说：{}'.format(msg.sender.name, msg.text))
     sticker_name = re.search('求(.*)表情', msg.text)
     gif_sticker_name = re.search('求(.*)动图', msg.text)
     if sticker_name:
@@ -33,18 +36,27 @@ def reply_stickers(msg):
         gif_sticker_name = gif_sticker_name.group(1).strip()
     if not sticker_name and not gif_sticker_name:
         return
-    if sticker_name == 'xxx' or gif_sticker_name == 'xxx':
-        return
     if current_reply_msg:
         print('由于正在回复上一条{}，跳过回复此消息'.format(current_reply_msg.sender))
         return
     current_reply_msg = msg
     if sticker_name:
-        send_stickers_with_keyword_to_chat(sticker_name, chat=group)
+        send_stickers_with_keyword_to_chat(sticker_name, chat=chatroom)
     elif gif_sticker_name:
-        send_gif_stickers_with_keyword_to_chat(gif_sticker_name, chat=group)
+        send_gif_stickers_with_keyword_to_chat(gif_sticker_name, chat=chatroom)
     current_reply_msg = None
 
 
-def run():
-    embed(shell='i')
+supported_msg_types = [itchat.content.TEXT, itchat.content.SHARING, itchat.content.NOTE]
+@itchat.msg_register(supported_msg_types, isGroupChat=True)
+def _(msg):
+    if msg.toUserName != chatroom.userName:
+        return
+    if msg.type == itchat.content.SHARING:
+        reply_sharing()
+    elif msg.type == itchat.content.NOTE:
+        reply_note()
+    elif msg.type == itchat.content.TEXT:
+        reply_text()
+
+itchat.run(blockThread=False)

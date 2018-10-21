@@ -8,7 +8,7 @@ from cralwer import get_sticker_urls
 
 async def get_file(url):
     print('开始下载 {}'.format(url))
-    r = await asession.get(url, stream=True, timeout=5)
+    r = await asession.get(url, stream=True, timeout=5, verify=False)
     f = io.BytesIO()
     for chunk in r.iter_content(1024):
         f.write(chunk)

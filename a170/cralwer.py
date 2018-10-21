@@ -13,7 +13,7 @@ async def get_sticker_urls_from_google(query, filetype):
         'tbm': 'isch',
         'tbs': 'ift:{}'.format(filetype) if filetype else ''
     }
-    r = await asession.get(url, params=params, timeout=1.5)
+    r = await asession.get(url, params=params, timeout=3, verify=False)
     tags = r.html.find('.rg_el .rg_meta')
     print('从 {} 搜索到{}个图片'.format(r.url, len(tags)))
     tags = tags[:12] or []

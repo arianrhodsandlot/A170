@@ -4,7 +4,7 @@ import asyncio
 import random
 import itchat
 from session import chatroom
-from a170.helpers import (
+from messager import (
     send_image_by_urls, send_stickers_by_query, send_animated_stickers_by_query
 )
 
@@ -98,4 +98,5 @@ def _(msg):
         loop.run_until_complete(reply(msg))
 
 
-itchat.run(blockThread=False)
+def main():
+    itchat.run(blockThread=False)

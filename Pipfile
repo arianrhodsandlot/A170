@@ -6,15 +6,17 @@ name = "pypi"
 [packages]
 requests-html = "*"
 ipython = "*"
-pillow = "*"
 pysocks = "*"
 "flake8" = "*"
-python-slugify = "*"
 imgpy = "*"
 itchat = "*"
 pylint = "*"
+python-dotenv = "*"
 
 [dev-packages]
 
 [requires]
 python_version = "3.7"
+
+[scripts]
+start = "ipython a170 -i"

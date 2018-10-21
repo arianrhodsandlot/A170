@@ -4,7 +4,7 @@ import itchat
 from urllib3.util.retry import Retry
 from requests_html import AsyncHTMLSession, requests
 
-chatroom_name = os.environ.get('A170_CHATROOM_NAME', 'a170')
+chatroom_name = os.getenv('A170_CHATROOM_NAME', 'a170')
 
 
 def retry_session(session, retries):

@@ -6,13 +6,18 @@ from session import asession, chatroom
 from cralwer import get_sticker_urls
 
 
-async def send_image_by_url(url):
+async def get_file(url):
     print('开始下载 {}'.format(url))
     r = await asession.get(url, stream=True, timeout=5)
     f = io.BytesIO()
     for chunk in r.iter_content(1024):
         f.write(chunk)
     f.seek(0)
+    return f
+
+
+async def send_image_by_url(url):
+    f = await get_file(url)
     print('开始上传 {}'.format(url))
     r = itchat.upload_file(fileDir='tmp.gif', isPicture=False, file_=f)
     try:

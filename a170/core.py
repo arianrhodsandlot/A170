@@ -94,7 +94,7 @@ loop = asyncio.get_event_loop()
 
 @itchat.msg_register(supported_msg_types, isGroupChat=True)
 def _(msg):
-    if msg.user == chatroom:
+    if msg.user.userName == chatroom.userName:
         loop.run_until_complete(reply(msg))
 
 

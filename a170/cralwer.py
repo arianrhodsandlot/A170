@@ -21,7 +21,7 @@ async def get_sticker_urls_from_google(query, filetype):
     sticker_urls = []
     for tag in tags:
         meta = json.loads(tag.text)
-        if meta.get('ow') < 800 and meta.get('oh') < 800:
+        if meta.get('ow') < 700 and meta.get('oh') < 700:
             sticker_urls.append(meta.get('ou'))
 
     random.shuffle(sticker_urls)

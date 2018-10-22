@@ -46,7 +46,7 @@ current_reply_msg = None
 
 
 def match_query_from_text(text):
-    m = re.match(r'(求|有没有)\s*(?P<query>.+)\s*(?P<query_type>表情|动图)', text)
+    m = re.match(r'(求|有没有|谁有)\s*(?P<query>.+)\s*(?P<query_type>表情|动图)', text)
     if not m:
         return None, None
     m = m.groupdict()

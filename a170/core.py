@@ -66,10 +66,11 @@ async def reply_text(msg):
     current_reply_msg = msg
 
     query, query_type = match_query_from_text(msg.text)
-    if query_type == 'animated':
-        await send_animated_stickers_by_query(query)
-    else:
-        await send_stickers_by_query(query)
+    if query:
+        if query_type == 'animated':
+            await send_animated_stickers_by_query(query)
+        else:
+            await send_stickers_by_query(query)
 
     current_reply_msg = None
 

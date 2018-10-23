@@ -6,7 +6,7 @@ session = retry_session()
 
 tags_file_name = 'fabiaoqing_tags.json'
 tag_page_url_template = 'https://fabiaoqing.com/tag/index/page/{}.html'
-tag_url_template = 'https://fabiaoqing.com/tag/detail/id/{}.html'
+tag_url_template = 'https://fabiaoqing.com/tag/detail/id/{}/page/{}.html'
 
 
 def update_tags():
@@ -47,7 +47,7 @@ def update_tag_page_counts():
             continue
 
         page_count = 1
-        tag_url = tag_url_template.format(tag['id'])
+        tag_url = tag_url_template.format(tag['id'], 1)
         print('开始抓取', tag_url)
         r = session.get(tag_url)
         pagination_items = r.html.find('.pagination > .item')

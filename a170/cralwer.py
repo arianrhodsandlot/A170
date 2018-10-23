@@ -1,12 +1,15 @@
 # coding: utf-8
 import json
 import random
+from os import path
 from .config import EVERY_REPLY_SEND_COUNT
 from .logger import logger
 from .session import asession_get
+from .assets.fabiaoqing.updater import tags_file_name, tag_url_template
 
 fabiaoqing_tags = []
-with open('a170/assets/fabiaoqing/fabiaoqing_tags.json') as f:
+fabiaoqing_tags_file_path = path.join('a170/assets/fabiaoqing', tags_file_name)
+with open(fabiaoqing_tags_file_path) as f:
     fabiaoqing_tags = json.load(f)
 
 
@@ -17,8 +20,11 @@ def get_tag_from_fabiaoqing(query):
 
 
 async def get_sticker_urls_by_fabiaoqing_tag(tag, filetype):
-    tag_url_template = 'https://fabiaoqing.com/tag/detail/id/{}.html'
-    url = tag_url_template.format(tag['id'])
+    page = 1
+    page_count = tag['page_count']
+    if page_count > 2:
+        page = random.randint(page, page_count - 1)
+    url = tag_url_template.format(tag['id'], page)
     r = await asession_get(url)
     sticker_urls = [sticker_el.attrs.get('data-original') for sticker_el in r.html.find('.tagbqppdiv .image')]
     if filetype:

@@ -2,6 +2,7 @@
 import json
 import random
 from .config import EVERY_REPLY_SEND_COUNT
+from .logger import logger
 from .session import asession_get
 
 fabiaoqing_tags = []
@@ -22,7 +23,10 @@ async def get_sticker_urls_by_fabiaoqing_tag(tag, filetype):
     sticker_urls = [sticker_el.attrs.get('data-original') for sticker_el in r.html.find('.tagbqppdiv .image')]
     if filetype:
         sticker_urls = [u for u in sticker_urls if u.endswith('.{}'.format(filetype))]
-    print('从 {} 搜索到{}个图片'.format(r.url, len(sticker_urls)))
+    logger.debug('从 {} 搜索到{}个图片'.format(r.url, len(sticker_urls)))
+    if len(sticker_urls) < 10:
+        logger.debug('数量太少跳过')
+        return []
 
     sticker_urls = random.sample(sticker_urls, EVERY_REPLY_SEND_COUNT)
     return sticker_urls
@@ -39,7 +43,7 @@ async def get_sticker_urls_from_google(query, filetype):
     }
     r = await asession_get(url, params=params)
     tags = r.html.find('.rg_el .rg_meta')
-    print('从 {} 搜索到{}个图片'.format(r.url, len(tags)))
+    logger.debug('从 {} 搜索到{}个图片'.format(r.url, len(tags)))
 
     sticker_urls = []
     for tag in tags:
@@ -61,9 +65,9 @@ async def get_sticker_urls(query, filetype=None):
         try:
             sticker_urls = await get_sticker_urls_by_fabiaoqing_tag(tag, filetype)
         except Exception as e:
-            print(e)
+            logger.error(e)
 
-    if len(sticker_urls) < 10:
+    if not sticker_urls:
         sticker_urls = await get_sticker_urls_from_google(query, filetype)
 
     return sticker_urls

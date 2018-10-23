@@ -3,6 +3,7 @@ import re
 import random
 import itchat
 from .config import STICKERS_FOR_SPAM, EVERY_REPLY_SEND_COUNT
+from .logger import logger
 from .chatroom import chatroom
 from .messager import send_image_by_urls, send_stickers_by_query, send_animated_stickers_by_query
 
@@ -13,7 +14,7 @@ chatroom_owner = chatroom.memberList[0]
 
 
 async def reply_sharing(msg):
-    print('{}：{} {}'.format(msg.actualNickName, msg.text, msg.url))
+    logger.debug('{}：{} {}'.format(msg.actualNickName, msg.text, msg.url))
     chatroom.send('@{} 逮住个发广告的！'.format(chatroom_owner.nickName))
     sticker_urls = random.sample(STICKERS_FOR_SPAM, EVERY_REPLY_SEND_COUNT)
     await send_image_by_urls(sticker_urls)
@@ -38,11 +39,11 @@ def match_query_from_text(text):
 
 
 async def reply_text(msg):
-    print('{}说：{}'.format(msg.actualNickName, msg.text))
+    logger.info('{}说：{}'.format(msg.actualNickName, msg.text))
     global current_reply_msg
 
     if current_reply_msg:
-        print('由于正在回复上一条，跳过回复此消息')
+        logger.debug('由于正在回复上一条，跳过回复此消息')
         return
 
     current_reply_msg = msg

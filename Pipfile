@@ -12,6 +12,7 @@ imgpy = "*"
 itchat = "*"
 pylint = "*"
 python-dotenv = "*"
+coloredlogs = "*"
 
 [dev-packages]
 

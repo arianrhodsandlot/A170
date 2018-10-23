@@ -1,6 +1,9 @@
 # coding: utf-8
+import urllib3
 from urllib3.util.retry import Retry
 from requests_html import AsyncHTMLSession, HTMLSession, requests
+
+urllib3.disable_warnings()
 
 
 def retry_session(retries=5, session=HTMLSession()):

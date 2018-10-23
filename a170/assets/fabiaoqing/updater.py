@@ -1,24 +1,8 @@
 # coding: utf-8
 import json
-from requests_html import HTMLSession, requests
-from urllib3.util.retry import Retry
+from a170.session import retry_session
 
-
-def retry_session(session, retries):
-    retry = Retry(
-        total=retries,
-        read=retries,
-        connect=retries,
-        backoff_factor=0,
-        status_forcelist=(500, 502, 503, 504),
-    )
-    adapter = requests.adapters.HTTPAdapter(max_retries=retry)
-    session.mount('http://', adapter)
-    session.mount('https://', adapter)
-    return session
-
-
-session = retry_session(session=HTMLSession(), retries=5)
+session = retry_session()
 
 tags_file_name = 'fabiaoqing_tags.json'
 tag_page_url_template = 'https://fabiaoqing.com/tag/index/page/{}.html'
@@ -50,7 +34,7 @@ def update_tags():
                 tag_name = tag_link.text
                 tags.append({'id': tag_id, 'name': tag_name})
 
-        json.dump(tags, fp=f, ensure_ascii=False, indent='  ')
+        json.dump(tags, fp=f, ensure_ascii=False)
 
 
 def update_tag_page_counts():
@@ -80,10 +64,10 @@ def update_tag_page_counts():
 
         if i and i % 20 == 0:
             with open(tags_file_name, 'w+') as f:
-                json.dump(tags, fp=f, ensure_ascii=False, indent='  ')
+                json.dump(tags, fp=f, ensure_ascii=False)
 
     with open(tags_file_name, 'w+') as f:
-        json.dump(tags, fp=f, ensure_ascii=False, indent='  ')
+        json.dump(tags, fp=f, ensure_ascii=False)
 
 
 def main():

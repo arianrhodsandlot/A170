@@ -19,4 +19,4 @@ python-dotenv = "*"
 python_version = "3.7"
 
 [scripts]
-start = "ipython a170 -i"
+start = "ipython -i -m a170"

@@ -2,8 +2,9 @@
 import io
 import asyncio
 import itchat
-from session import asession, chatroom
-from cralwer import get_sticker_urls
+from .chatroom import chatroom
+from .session import asession
+from .cralwer import get_sticker_urls
 
 
 async def get_file(url):

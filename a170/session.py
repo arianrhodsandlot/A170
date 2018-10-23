@@ -1,13 +1,9 @@
 # coding: utf-8
-import os
-import itchat
 from urllib3.util.retry import Retry
-from requests_html import AsyncHTMLSession, requests
-
-chatroom_name = os.getenv('A170_CHATROOM_NAME', 'a170')
+from requests_html import AsyncHTMLSession, HTMLSession, requests
 
 
-def retry_session(session, retries):
+def retry_session(retries=5, session=HTMLSession()):
     retry = Retry(
         total=retries,
         read=retries,
@@ -21,7 +17,8 @@ def retry_session(session, retries):
     return session
 
 
-asession = retry_session(session=AsyncHTMLSession(), retries=5)
+asession = retry_session(session=AsyncHTMLSession())
 
-itchat.auto_login(enableCmdQR=2, hotReload=True)
-chatroom = itchat.search_chatrooms(chatroom_name)[0]
+
+def asession_get(url, params=None):
+    return asession.get(url=url, params=params, timeout=3, verify=False)

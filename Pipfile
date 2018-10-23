@@ -7,14 +7,14 @@ name = "pypi"
 requests-html = "*"
 ipython = "*"
 pysocks = "*"
-"flake8" = "*"
-imgpy = "*"
 itchat = "*"
-pylint = "*"
 python-dotenv = "*"
 coloredlogs = "*"
+verboselogs = "*"
 
 [dev-packages]
+pylint = "*"
+"flake8" = "*"
 
 [requires]
 python_version = "3.7"

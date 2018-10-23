@@ -1,19 +1,22 @@
 # coding: utf-8
-import logging
 import os
 import coloredlogs
+import verboselogs
+from logging.handlers import TimedRotatingFileHandler
+from .config import LOG_DIRNAME, LOG_FILENAME
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+if not os.path.exists(LOG_DIRNAME):
+    os.makedirs(LOG_DIRNAME)
 
-log_file_name = os.getenv('A170_LOG_FILE_NAME', 'a170.log')
-log_file_name = log_file_name.format()
-if log_file_name:
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    fh = logging.FileHandler(log_file_name)
-    fh.setLevel(logging.DEBUG)
-    fh.setFormatter(formatter)
-    logger.addHandler(fh)
+log_fmt = '%(asctime)s - %(levelname)s - %(message)s'
+logger = verboselogs.VerboseLogger(__name__)
 
-coloredlogs_fmt = '%(asctime)s - %(levelname)s - %(message)s'
-coloredlogs.install(level='DEBUG', logger=logger, fmt=coloredlogs_fmt)
+
+log_file_path = os.path.join(LOG_DIRNAME, LOG_FILENAME)
+fh = TimedRotatingFileHandler(filename=log_file_path, when='h')
+fh.setLevel(verboselogs.NOTICE)
+formatter = verboselogs.logging.Formatter(fmt=log_fmt)
+fh.setFormatter(formatter)
+logger.addHandler(fh)
+
+coloredlogs.install(level=verboselogs.SPAM, logger=logger, fmt=log_fmt)

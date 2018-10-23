@@ -17,3 +17,6 @@ STICKERS_FOR_SPAM = [
     'http://image.bee-ji.com/25019',
     'http://image.bee-ji.com/59485',
 ]
+
+LOG_DIRNAME = 'log'
+LOG_FILENAME = 'a170-log.log'

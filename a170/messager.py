@@ -9,7 +9,7 @@ from .cralwer import get_sticker_urls
 
 
 async def get_file(url):
-    logger.debug('开始下载 {}'.format(url))
+    logger.verbose('开始下载 {}'.format(url))
     r = await asession.get(url, stream=True, timeout=5, verify=False)
     f = io.BytesIO()
     for chunk in r.iter_content(1024):
@@ -20,7 +20,7 @@ async def get_file(url):
 
 async def send_image_by_url(url):
     f = await get_file(url)
-    logger.debug('开始上传 {}'.format(url))
+    logger.verbose('开始上传 {}'.format(url))
     r = itchat.upload_file(fileDir='tmp.gif', isPicture=False, file_=f)
     try:
         chatroom.send_image(fileDir='tmp.gif', mediaId=r['MediaId'])

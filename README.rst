@@ -6,7 +6,7 @@ A170
 
 Overview
 --------
-A170 is a sticker bot for WeChat group. Setup with a WeChat group name and login with a WeChat account, it will reply with a series of stickers from some certain websites when someone send a request.
+A170 is a sticker bot for WeChat group. Tell it a WeChat group name and login with a WeChat account, it will reply a series of stickers from some certain websites when someone in that group send a request to it.
 
 
 Usage
@@ -50,7 +50,7 @@ Here are how it works:
 1. If a keyword received by A170 is a predefined tag in this `tag wall <https://fabiaoqing.com/tag>`_ , A170 will pick three stickers from a random page of the tag's index page.
 2. Otherwise it will perform a search using Google Images.
 
-A170's name comes from *NieR: Automata*. In that worldview, "A170" is the name of a Pod Program, which can be used to find rare materials.
+A170's name comes from *NieR: Automata*. In that worldview, "A170: Scanner" is the name of a Pod Program, which can be used to find rare materials.
 
 License
 -------

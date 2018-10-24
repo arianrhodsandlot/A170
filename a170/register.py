@@ -79,22 +79,29 @@ def serialize_msg(msg):
 
 
 def log_msg(msg):
-    try:
-        serialized_msg = serialize_msg(msg)
-        serialized_msg_text = serialized_msg['text']
-        query, _ = match_query_from_text(serialized_msg_text)
-        logger.notice(json.dumps(serialized_msg, ensure_ascii=False))
-        debug_log = '{} {} {} ({})'.format(msg.actualNickName, serialized_msg_text, msg.url, msg.type)
-        if query:
-            logger.info(debug_log)
-        else:
-            logger.spam(debug_log)
-    except Exception as e:
-        logger.critical(e)
+    serialized_msg = serialize_msg(msg)
+    serialized_msg_text = serialized_msg['text']
+
+    if msg.type == itchat.content.SYSTEM:
+        should_log_msg = any([serialized_msg_text, msg.content, msg.url])
+        if not should_log_msg:
+            return
+
+    query, _ = match_query_from_text(serialized_msg_text)
+    logger.notice(json.dumps(serialized_msg, ensure_ascii=False))
+    debug_log = '{} {} {} ({})'.format(msg.actualNickName, serialized_msg_text, msg.url, msg.type)
+    if query:
+        logger.info(debug_log)
+    else:
+        logger.spam(debug_log)
 
 
 async def reply(msg):
-    log_msg(msg)
+    try:
+        log_msg(msg)
+    except Exception as e:
+        logger.critical(e)
+
     if msg.type == itchat.content.SHARING:
         await reply_sharing(msg)
     elif msg.type == itchat.content.NOTE:

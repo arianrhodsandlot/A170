@@ -17,7 +17,7 @@ if not chatroom.memberList:
 chatroom_owner = chatroom.memberList[0]
 
 
-async def reply_sharing(msg):
+async def reply_sharing():
     chatroom.send(REPLY_TEMPLATE_SPAM.format(chatroom_owner.nickName))
     sticker_urls = random.sample(STICKERS_FOR_SPAM, EVERY_REPLY_SEND_COUNT)
     await send_image_by_urls(sticker_urls)
@@ -91,11 +91,14 @@ async def reply(msg):
         logger.critical(e)
 
     if msg.type == itchat.content.SHARING:
-        await reply_sharing(msg)
+        await reply_sharing()
     elif msg.type == itchat.content.NOTE:
         await reply_note(msg)
     elif msg.type == itchat.content.TEXT:
-        await reply_text(msg)
+        if 'http://' in msg.text or 'https://' in msg.text:
+            await reply_sharing()
+        else:
+            await reply_text(msg)
 
 
 def sync_reply(msg):

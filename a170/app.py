@@ -1,16 +1,13 @@
 # coding: utf-8
-import asyncio
 import itchat
 from .chatroom import chatroom
-from .register import reply
-
-loop = asyncio.get_event_loop()
+from .register import reply_in_background
 
 
 @itchat.msg_register(itchat.content.INCOME_MSG, isGroupChat=True)
 def _(msg):
     if msg.user.userName == chatroom.userName:
-        loop.run_until_complete(reply(msg))
+        reply_in_background(msg)
 
 
 def run():

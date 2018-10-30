@@ -20,8 +20,9 @@ def retry_session(retries=5, session=HTMLSession()):
     return session
 
 
-asession = retry_session(session=AsyncHTMLSession())
+def get_asession():
+    return retry_session(session=AsyncHTMLSession())
 
 
 def asession_get(url, params=None):
-    return asession.get(url=url, params=params, timeout=3, verify=False)
+    return get_asession().get(url=url, params=params, timeout=3, verify=False)

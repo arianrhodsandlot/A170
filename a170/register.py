@@ -2,7 +2,9 @@
 import re
 import random
 import json
+import asyncio
 import itchat
+from threading import Thread
 from .config import (STICKERS_FOR_SPAM, EVERY_REPLY_SEND_COUNT, REPLY_TEMPLATE_SPAM, QUERY_AND_QUERY_TYPE_REG,
                      ANIMATED_QUERY_TYPE, GIFT_MONEY_KEYWORD, GIFT_MONEY_STICKER_QUERY)
 from .logger import logger
@@ -36,6 +38,9 @@ def match_query_from_text(text):
     return query, query_type
 
 
+current_reply_msg = None
+
+
 async def reply_text(msg):
     global current_reply_msg
 
@@ -51,6 +56,7 @@ async def reply_text(msg):
             await send_stickers_by_query(query)
     except Exception as e:
         logger.critical(e)
+        raise e
     finally:
         current_reply_msg = None
 
@@ -102,3 +108,15 @@ async def reply(msg):
         await reply_note(msg)
     elif msg.type == itchat.content.TEXT:
         await reply_text(msg)
+
+
+def sync_reply(msg):
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(reply(msg))
+    loop.close()
+
+
+def reply_in_background(msg):
+    t = Thread(target=sync_reply, kwargs={'msg': msg})
+    t.start()

@@ -6,12 +6,12 @@ from .config import (LOG_TEMPLATE_START_SEND, LOG_TEMPLATE_SEND_FAILED,
                      LOG_TEMPLATE_UPLOAD_FAILED, LOG_TEMPLATE_DOWNLOAD_FAILED)
 from .logger import logger
 from .chatroom import chatroom
-from .session import asession
+from .session import get_asession
 from .cralwer import get_sticker_urls
 
 
 async def get_file(url):
-    r = await asession.get(url, stream=True, timeout=5, verify=False)
+    r = await get_asession().get(url, stream=True, timeout=5, verify=False)
     f = io.BytesIO()
     for chunk in r.iter_content(1024):
         f.write(chunk)

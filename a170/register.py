@@ -38,27 +38,15 @@ def match_query_from_text(text):
     return query, query_type
 
 
-current_reply_msg = None
-
-
 async def reply_text(msg):
-    global current_reply_msg
-
     query, query_type = match_query_from_text(msg.text)
     if not query:
         return
 
-    current_reply_msg = msg
-    try:
-        if query_type == ANIMATED_QUERY_TYPE:
-            await send_animated_stickers_by_query(query)
-        else:
-            await send_stickers_by_query(query)
-    except Exception as e:
-        logger.critical(e)
-        raise e
-    finally:
-        current_reply_msg = None
+    if query_type == ANIMATED_QUERY_TYPE:
+        await send_animated_stickers_by_query(query)
+    else:
+        await send_stickers_by_query(query)
 
 
 def serialize_msg(msg):

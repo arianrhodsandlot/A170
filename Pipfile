@@ -11,11 +11,11 @@ itchat = "*"
 python-dotenv = "*"
 coloredlogs = "*"
 verboselogs = "*"
+yagmail = "*"
 
 [dev-packages]
 pylint = "*"
 "flake8" = "*"
-"doc8" = "*"
 
 [requires]
 python_version = "3.7"

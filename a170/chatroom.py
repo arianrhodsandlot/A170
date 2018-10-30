@@ -1,8 +1,7 @@
 # coding: utf-8
-import os
 import itchat
+from .config import A170_CHATROOM_NAME
+from .reporter import report_login, report_logout
 
-chatroom_name = os.getenv('A170_CHATROOM_NAME', 'a170')
-
-itchat.auto_login(enableCmdQR=2, hotReload=True)
-chatroom = itchat.search_chatrooms(chatroom_name)[0]
+itchat.auto_login(enableCmdQR=2, hotReload=True, loginCallback=report_login, exitCallback=report_logout)
+chatroom = itchat.search_chatrooms(A170_CHATROOM_NAME)[0]

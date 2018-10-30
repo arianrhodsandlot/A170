@@ -20,3 +20,17 @@ STICKERS_FOR_SPAM = [
 
 LOG_DIRNAME = 'log'
 LOG_FILENAME = 'a170-log.log'
+
+LOG_TEMPLATE_START_DOWNLOAD = '开始下载 {}'
+LOG_TEMPLATE_START_UPLOAD = '开始上传 {}'
+LOG_TEMPLATE_SEND_FAILED = '发送 {} 失败'
+LOG_TEMPLATE_SEARCH_COUNT = '从 {} 搜索到{}个图片'
+LOG_TEMPLATE_TOO_FEW_SKIP = '数量太少跳过'
+
+REPLY_TEMPLATE_SPAM = '@{} 逮住个发广告的！'
+
+QUERY_AND_QUERY_TYPE_REG = r'(求|有没有|谁有)\s*(?P<query>.+)\s*(?P<query_type>表情|动图)'
+ANIMATED_QUERY_TYPE = '动图'
+
+GIFT_MONEY_KEYWORD = '红包'
+GIFT_MONEY_STICKER_QUERY = '谢谢老板'

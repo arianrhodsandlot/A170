@@ -2,7 +2,7 @@
 import json
 import random
 from os import path
-from .config import EVERY_REPLY_SEND_COUNT
+from .config import EVERY_REPLY_SEND_COUNT, LOG_TEMPLATE_SEARCH_COUNT, LOG_TEMPLATE_TOO_FEW_SKIP
 from .logger import logger
 from .session import asession_get
 from .assets.fabiaoqing.updater import tags_file_name, tag_url_template
@@ -29,9 +29,9 @@ async def get_sticker_urls_by_fabiaoqing_tag(tag, filetype):
     sticker_urls = [sticker_el.attrs.get('data-original') for sticker_el in r.html.find('.tagbqppdiv .image')]
     if filetype:
         sticker_urls = [u for u in sticker_urls if u.endswith('.{}'.format(filetype))]
-    logger.debug('从 {} 搜索到{}个图片'.format(r.url, len(sticker_urls)))
+    logger.debug(LOG_TEMPLATE_SEARCH_COUNT.format(r.url, len(sticker_urls)))
     if len(sticker_urls) < 10:
-        logger.debug('数量太少跳过')
+        logger.debug(LOG_TEMPLATE_TOO_FEW_SKIP)
         return []
 
     sticker_urls = random.sample(sticker_urls, EVERY_REPLY_SEND_COUNT)
@@ -49,7 +49,7 @@ async def get_sticker_urls_from_google(query, filetype):
     }
     r = await asession_get(url, params=params)
     tags = r.html.find('.rg_el .rg_meta')
-    logger.debug('从 {} 搜索到{}个图片'.format(r.url, len(tags)))
+    logger.debug(LOG_TEMPLATE_SEARCH_COUNT.format(r.url, len(tags)))
 
     sticker_urls = []
     for tag in tags:

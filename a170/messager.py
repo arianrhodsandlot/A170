@@ -26,12 +26,14 @@ async def send_image_by_url(url):
     except Exception as e:
         logger.error(LOG_TEMPLATE_DOWNLOAD_FAILED.format(url))
         logger.error(e)
+        return
 
     try:
         r = itchat.upload_file(fileDir='tmp.gif', isPicture=False, file_=f)
     except Exception as e:
         logger.error(LOG_TEMPLATE_UPLOAD_FAILED.format(url))
         logger.error(e)
+        return
 
     try:
         chatroom.send_image(fileDir='tmp.gif', mediaId=r['MediaId'])

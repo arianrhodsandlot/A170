@@ -8,7 +8,6 @@ class TestCralwer(aiounittest.AsyncTestCase):
         tag = get_tag_from_fabiaoqing('呵呵')
         self.assertIsNotNone(tag)
 
-    def test_get_tag_from_fabiaoqing_none(self):
         tag = get_tag_from_fabiaoqing('asdf')
         self.assertIsNone(tag)
 
@@ -17,7 +16,6 @@ class TestCralwer(aiounittest.AsyncTestCase):
         sticker_urls = await get_sticker_urls_by_fabiaoqing_tag(tag=tag, filetype=None)
         self.assertEqual(len(sticker_urls), 3)
 
-    async def test_get_sticker_urls_by_fabiaoqing_tag_gif(self):
         tag = get_tag_from_fabiaoqing('跳舞')
         sticker_urls = await get_sticker_urls_by_fabiaoqing_tag(tag=tag, filetype='gif')
         self.assertEqual(len(sticker_urls), 3)
@@ -28,7 +26,6 @@ class TestCralwer(aiounittest.AsyncTestCase):
         sticker_urls = await get_sticker_urls_from_google('asdfasdf', '')
         self.assertEqual(len(sticker_urls), 3)
 
-    async def test_get_sticker_urls_from_google_gif(self):
         sticker_urls = await get_sticker_urls_from_google('asdfasdf', 'gif')
         self.assertEqual(len(sticker_urls), 3)
 
@@ -36,7 +33,6 @@ class TestCralwer(aiounittest.AsyncTestCase):
         sticker_urls = await get_sticker_urls('水果')
         self.assertEqual(len(sticker_urls), 3)
 
-    async def test_get_sticker_urls_gif(self):
         sticker_urls = await get_sticker_urls(query='跳舞', filetype='gif')
         self.assertEqual(len(sticker_urls), 3)
         for sticker_url in sticker_urls:

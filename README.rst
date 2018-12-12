@@ -50,8 +50,6 @@ Here are how it works:
 1. If a keyword received by A170 is a predefined tag in this `tag wall <https://fabiaoqing.com/tag>`_ , A170 will pick three stickers from a random page of the tag's index page.
 2. Otherwise it will perform a search using Google Images.
 
-A170's name comes from *NieR: Automata*. In that worldview, "A170: Scanner" is the name of a Pod Program, which can be used to find rare materials.
-
 License
 -------
 MIT

@@ -16,9 +16,11 @@ yagmail = "*"
 [dev-packages]
 pylint = "*"
 "flake8" = "*"
+aiounittest = "*"
 
 [requires]
 python_version = "3.7"
 
 [scripts]
 start = "ipython -i -m a170"
+test = "python -m unittest discover"

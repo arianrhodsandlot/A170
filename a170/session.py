@@ -1,8 +1,6 @@
 # coding: utf-8
 from requests_html import AsyncHTMLSession, HTMLSession, requests
 
-requests.urllib3.disable_warnings()
-
 
 def retry_session(retries=5, session=HTMLSession()):
     retry = requests.urllib3.util.retry.Retry(
@@ -14,6 +12,7 @@ def retry_session(retries=5, session=HTMLSession()):
     adapter = requests.adapters.HTTPAdapter(max_retries=retry)
     session.mount('http://', adapter)
     session.mount('https://', adapter)
+    requests.urllib3.disable_warnings()
     return session
 
 

@@ -1,15 +1,15 @@
 # coding: utf-8
-import re
 import random
 import json
 import asyncio
 import itchat
 from threading import Thread
-from .config import (STICKERS_FOR_SPAM, EVERY_REPLY_SEND_COUNT, REPLY_TEMPLATE_SPAM, QUERY_AND_QUERY_TYPE_REG,
+from .config import (STICKERS_FOR_SPAM, EVERY_REPLY_SEND_COUNT, REPLY_TEMPLATE_SPAM,
                      ANIMATED_QUERY_TYPE, GIFT_MONEY_KEYWORD, GIFT_MONEY_STICKER_QUERY)
 from .logger import logger
 from .chatroom import chatroom
 from .messager import send_image_by_urls, send_stickers_by_query, send_animated_stickers_by_query
+from .util import match_query_from_text, is_spam_msg
 
 
 if not chatroom.memberList:
@@ -17,7 +17,7 @@ if not chatroom.memberList:
 chatroom_owner = chatroom.memberList[0]
 
 
-async def reply_sharing():
+async def reply_spam():
     chatroom.send(REPLY_TEMPLATE_SPAM.format(chatroom_owner.nickName))
     sticker_urls = random.sample(STICKERS_FOR_SPAM, EVERY_REPLY_SEND_COUNT)
     await send_image_by_urls(sticker_urls)
@@ -26,16 +26,6 @@ async def reply_sharing():
 async def reply_note(msg):
     if GIFT_MONEY_KEYWORD in msg.text:
         await send_stickers_by_query(GIFT_MONEY_STICKER_QUERY)
-
-
-def match_query_from_text(text):
-    m = re.match(QUERY_AND_QUERY_TYPE_REG, text)
-    if not m:
-        return None, None
-    m = m.groupdict()
-    query = m.get('query', '')
-    query_type = m.get('query_type', '')
-    return query, query_type
 
 
 async def reply_text(msg):
@@ -90,15 +80,12 @@ async def reply(msg):
     except Exception as e:
         logger.critical(e)
 
-    if msg.type == itchat.content.SHARING:
-        await reply_sharing()
+    if is_spam_msg(msg):
+        await reply_spam()
     elif msg.type == itchat.content.NOTE:
         await reply_note(msg)
     elif msg.type == itchat.content.TEXT:
-        if 'http://' in msg.text or 'https://' in msg.text:
-            await reply_sharing()
-        else:
-            await reply_text(msg)
+        await reply_text(msg)
 
 
 def sync_reply(msg):

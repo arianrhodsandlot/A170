@@ -1,0 +1,21 @@
+# Python CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-python/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3.7.1
+    steps:
+      - checkout
+      - run:
+          name: install dependencies
+          command: pipenv install -d
+      - save_cache:
+          paths:
+            - ~/.local/share/virtualenvs/venv
+          key: pip-packages-v1-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+      - run:
+          name: run tests
+          command: pipenv run test

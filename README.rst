@@ -1,8 +1,19 @@
 A170
 ====
 
+.. image:: https://img.shields.io/github/license/arianrhodsandlot/A170.svg
+  :target: https://github.com/arianrhodsandlot/A170/blob/master/LICENSE.txt
+
+.. image:: https://img.shields.io/circleci/project/github/arianrhodsandlot/A170.svg
+  :target: https://circleci.com/gh/arianrhodsandlot/A170
+
+|
+
+.. image:: https://user-images.githubusercontent.com/10987902/50162031-4730f500-0318-11e9-85c6-68f154912b80.jpg
+  :width: 100%
+
 .. contents::
-   :local:
+  :local:
 
 Overview
 --------

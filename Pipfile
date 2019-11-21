@@ -12,6 +12,7 @@ python-dotenv = "*"
 coloredlogs = "*"
 verboselogs = "*"
 yagmail = "*"
+aiounittest = "*"
 
 [dev-packages]
 pylint = "*"
@@ -19,7 +20,7 @@ pylint = "*"
 aiounittest = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "3.8"
 
 [scripts]
 start = "ipython -i -m a170"

@@ -23,5 +23,5 @@ aiounittest = "*"
 python_version = "3.8"
 
 [scripts]
-start = "ipython -i -m a170"
+start = "python -i -m a170"
 test = "python -m unittest discover -cv --locals"

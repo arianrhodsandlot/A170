@@ -48,18 +48,21 @@ async def get_sticker_urls_from_google(query, filetype):
         'tbs': 'ift:{}'.format(filetype) if filetype else None
     }
     r = await asession_get(url, params=params)
-    tags = r.html.find('.rg_el .rg_meta')
+    tags = r.html.find('#images .image')
     logger.debug(LOG_TEMPLATE_SEARCH_COUNT.format(r.url, len(tags)))
 
     sticker_urls = []
+    from urllib import parse
     for tag in tags:
-        meta = json.loads(tag.text)
-        if meta.get('ow') < 700 and meta.get('oh') < 700:
-            sticker_urls.append(meta.get('ou'))
+        url = tag.attrs.get('href')
+        url = parse.parse_qs(parse.urlsplit(url).query)
+        url = dict(url)
+        url = url.get('imgurl')
+        if len(url):
+            sticker_urls.append(url[0])
 
     sticker_urls = sticker_urls[:15]
     sticker_urls = random.sample(sticker_urls, EVERY_REPLY_SEND_COUNT)
-
     return sticker_urls
 
 

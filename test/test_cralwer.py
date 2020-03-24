@@ -4,29 +4,11 @@ from a170.cralwer import (get_tag_from_fabiaoqing, get_sticker_urls_by_fabiaoqin
 
 
 class TestCralwer(aiounittest.AsyncTestCase):
-    def test_get_tag_from_fabiaoqing(self):
-        tag = get_tag_from_fabiaoqing('呵呵')
-        self.assertIsNotNone(tag)
-
-        tag = get_tag_from_fabiaoqing('asdf')
-        self.assertIsNone(tag)
-
-    async def test_get_sticker_urls_by_fabiaoqing_tag(self):
-        tag = get_tag_from_fabiaoqing('水果')
-        sticker_urls = await get_sticker_urls_by_fabiaoqing_tag(tag=tag, filetype=None)
-        self.assertEqual(len(sticker_urls), 3)
-
-        tag = get_tag_from_fabiaoqing('跳舞')
-        sticker_urls = await get_sticker_urls_by_fabiaoqing_tag(tag=tag, filetype='gif')
-        self.assertEqual(len(sticker_urls), 3)
-        for sticker_url in sticker_urls:
-            self.assertTrue(sticker_url.endswith('.gif'))
-
     async def test_get_sticker_urls_from_google(self):
-        sticker_urls = await get_sticker_urls_from_google('asdfasdf', '')
+        sticker_urls = await get_sticker_urls_from_google('百度', '')
         self.assertEqual(len(sticker_urls), 3)
 
-        sticker_urls = await get_sticker_urls_from_google('asdfasdf', 'gif')
+        sticker_urls = await get_sticker_urls_from_google('百度', 'gif')
         self.assertEqual(len(sticker_urls), 3)
 
     async def test_get_sticker_urls(self):

@@ -21,4 +21,5 @@ def get_asession():
 
 
 def asession_get(url, params=None):
-    return get_asession().get(url=url, params=params, timeout=3, verify=False)
+    ua = 'Mozilla/5.0 (PlayBook; U; RIM Tablet OS 2.1.0; en-US) AppleWebKit/536.2+ (KHTML like Gecko) Version/7.2.1.0 Safari/536.2+'
+    return get_asession().get(url=url, params=params, timeout=3, verify=False, headers={'user-agent': ua})

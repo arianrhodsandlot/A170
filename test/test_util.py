@@ -3,8 +3,8 @@ import random
 import aiounittest
 import itchat
 from collections import namedtuple
-from a170.config import STICKERS_FOR_SPAM, ANIMATED_QUERY_TYPE
-from a170.util import get_file, match_query_from_text, is_spam_msg
+from forklift.config import STICKERS_FOR_SPAM, ANIMATED_QUERY_TYPE
+from forklift.util import get_file, match_query_from_text, is_spam_msg
 
 
 class TestUtil(aiounittest.AsyncTestCase):

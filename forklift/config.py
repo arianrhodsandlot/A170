@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-A170_CHATROOM_NAME = os.getenv('A170_CHATROOM_NAME', 'a170')
+FORKLIFT_CHATROOM_NAME = os.getenv('FORKLIFT_CHATROOM_NAME', 'forklift')
 
 EVERY_REPLY_SEND_COUNT = 3
 
@@ -26,7 +26,7 @@ STICKERS_FOR_SPAM = [
 ]
 
 LOG_DIRNAME = 'log'
-LOG_FILENAME = 'a170-log.log'
+LOG_FILENAME = 'forklift-log.log'
 
 LOG_TEMPLATE_START_SEND = os.getenv('LOG_TEMPLATE_SEND_DOWNLOAD', '开始发送 {}')
 LOG_TEMPLATE_DOWNLOAD_FAILED = os.getenv('LOG_TEMPLATE_DOWNLOAD_FAILED', '下载 {} 失败')
@@ -47,5 +47,5 @@ GIFT_MONEY_STICKER_QUERY = os.getenv('GIFT_MONEY_STICKER_QUERY', '谢谢老板')
 
 REPORT_GMAIL = os.getenv('REPORT_GMAIL')
 REPORT_GMAIL_PASSWORD = os.getenv('REPORT_GMAIL_PASSWORD')
-REPORT_MAIL_SUBJECT = os.getenv('REPORT_MAIL_SUBJECT', 'A170 log out!')
+REPORT_MAIL_SUBJECT = os.getenv('REPORT_MAIL_SUBJECT', 'Forklift log out!')
 REPORT_MAIL_BODY = os.getenv('REPORT_MAIL_BODY', REPORT_MAIL_SUBJECT)

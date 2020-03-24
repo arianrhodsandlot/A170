@@ -1,5 +1,5 @@
 import aiounittest
-from a170.cralwer import (get_tag_from_fabiaoqing, get_sticker_urls_by_fabiaoqing_tag,
+from forklift.cralwer import (get_tag_from_fabiaoqing, get_sticker_urls_by_fabiaoqing_tag,
                           get_sticker_urls_from_google, get_sticker_urls)
 
 

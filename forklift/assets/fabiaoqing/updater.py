@@ -1,6 +1,6 @@
 # coding: utf-8
 import json
-from a170.session import retry_session
+from forklift.session import retry_session
 
 session = retry_session()
 

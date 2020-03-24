@@ -8,7 +8,7 @@ from .session import asession_get
 from .assets.fabiaoqing.updater import tags_file_name, tag_url_template
 
 fabiaoqing_tags = []
-fabiaoqing_tags_file_path = path.join('a170/assets/fabiaoqing', tags_file_name)
+fabiaoqing_tags_file_path = path.join('forklift/assets/fabiaoqing', tags_file_name)
 with open(fabiaoqing_tags_file_path) as f:
     fabiaoqing_tags = json.load(f)
 
